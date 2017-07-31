@@ -72,4 +72,8 @@ public class MySQL {
 		}
 		return stm;
 	}
+	
+	public static Connection getCon() {
+		return con;
+	}
 }

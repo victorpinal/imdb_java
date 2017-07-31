@@ -66,7 +66,7 @@ public class Principal {
          * (UnsupportedEncodingException e) { e.printStackTrace(); }
          */
 
-        // p.run();
+         p.run();
 
         try {
             p.CargarRutasMRU();
@@ -92,11 +92,9 @@ public class Principal {
     }
 
     private void run() {
-
-        String user = Config.getPrefs("mysql_user", true);
-        String pass = Config.getPrefs("mysql_password", true, false);
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://192.168.0.3/peliculas", user, pass)) {
-            ResultSet res = con.createStatement().executeQuery("SELECT DISTINCT ruta FROM film WHERE ruta IS NOT NULL;");
+  	
+        try {
+            ResultSet res = MySQL._select("SELECT DISTINCT ruta FROM film WHERE ruta IS NOT NULL;");
             while (res.next()) {
                 rutasInicio.add(res.getString("ruta"));
             }
@@ -114,7 +112,8 @@ public class Principal {
                 ruta.replaceFirst(raiz, map.get(raiz));
                 System.out.println(ruta);
             } else {
-                System.out.println(raiz);
+            	System.out.println(ruta);
+                //System.out.println(raiz);
             }
         }
 
@@ -153,11 +152,9 @@ public class Principal {
             e1.printStackTrace();
         }
 
-        String user = Config.getPrefs("mysql_user", true);
-        String pass = Config.getPrefs("mysql_password", true, false);
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://192.168.0.3:3306/peliculas", user, pass)) {
+        try {
 
-            ResultSet res = con.createStatement().executeQuery("select id,imdb_id from film where picture is null and imdb_id like 'tt%'");
+            ResultSet res = MySQL._select("select id,imdb_id from film where picture is null and imdb_id like 'tt%'");
             while (res.next()) {
                 JSONObject json = new JSONObject(
                         IOUtils.toString(new URL("http://www.omdbapi.com/?i=" + res.getString("imdb_id") + "&plot=short&r=json"), Charset.forName("UTF-8")));
@@ -173,7 +170,7 @@ public class Principal {
                 out.close();
                 System.out.println(out);
 
-                PreparedStatement st = con.prepareStatement("UPDATE film SET picture=? WHERE id=?");
+                PreparedStatement st = MySQL.getCon().prepareStatement("UPDATE film SET picture=? WHERE id=?");
                 st.setBytes(1, out.toByteArray());
                 st.setInt(2, res.getInt("id"));
                 st.execute();
