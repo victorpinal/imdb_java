@@ -10,6 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 public class Util {    
     
@@ -19,9 +21,9 @@ public class Util {
      * @return Cadena con el nombre filtrado
      */
     public static String SplitWords(String s) {
-        String str = s.replaceAll("^(\\w+([\\.\\s]?\\w+)*).*", "$1");
-        
-        return null;
+        List<String> words = Arrays.asList(s.replaceAll("^(\\w+([\\.\\s]?\\w+)*).*", "$1").split("\\W+"));
+        words.removeAll(Arrays.asList(Config.getPrefs(Config.WORDLIST).split(",")));
+        return String.join(" ", words);
     }
     /*
     Private Function SplitWords(ByVal s As String) As String

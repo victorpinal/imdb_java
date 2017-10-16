@@ -1,19 +1,12 @@
 package imdb_java;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
@@ -66,10 +57,13 @@ public class Principal {
          * (UnsupportedEncodingException e) { e.printStackTrace(); }
          */
 
-         p.run();
+         //p.run();
 
         try {
+        	
             p.CargarRutasMRU();
+            p.FiltraYPintaGrid(true);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,31 +86,6 @@ public class Principal {
     }
 
     private void run() {
-  	
-        try {
-            ResultSet res = MySQL._select("SELECT DISTINCT ruta FROM film WHERE ruta IS NOT NULL;");
-            while (res.next()) {
-                rutasInicio.add(res.getString("ruta"));
-            }
-        } catch (Exception e) {
-            _log.severe(e.getMessage());
-        }
-
-        for (File root : File.listRoots()) {
-            map.put(Pattern.compile("\\s\\(.+\\)").matcher(FileSystemView.getFileSystemView().getSystemDisplayName(root)).replaceAll(""), root.getPath());
-        }
-
-        for (String ruta : rutasInicio) {
-            String raiz = ruta.split("[\\\\/]")[0];
-            if (map.containsKey(raiz)) {
-                ruta.replaceFirst(raiz, map.get(raiz));
-                System.out.println(ruta);
-            } else {
-            	System.out.println(ruta);
-                //System.out.println(raiz);
-            }
-        }
-
     }
 
     /**
@@ -216,10 +185,9 @@ public class Principal {
             mru_folders.add(last_folder);
         }
                 
-        //Hacemos un mapa con los nombres de volumen y sus rutas
-        HashMap<String, String> raices = new HashMap<>();
+        //Hacemos un mapa con los nombres de volumen y sus rutas        
         for (File root : File.listRoots()) {
-            raices.put(Pattern.compile("\\s\\(.+\\)").matcher(FileSystemView.getFileSystemView().getSystemDisplayName(root)).replaceAll(""), root.getPath());
+            map.put(Pattern.compile("\\s\\(.+\\)").matcher(FileSystemView.getFileSystemView().getSystemDisplayName(root)).replaceAll(""), root.getPath()+File.separator);
         }
                 
         try {
@@ -231,7 +199,7 @@ public class Principal {
                     String ruta_final = ruta.replaceFirst(raiz, map.get(raiz));
                     if (!mru_folders.contains(ruta_final) && Files.isDirectory(Paths.get(ruta_final))) {
                         mru_folders.add(ruta_final);
-                        _log.fine(ruta_final + " added to mru");                        
+                        _log.info(ruta_final + " added to mru");                        
                     }                    
                 }
             }
@@ -240,7 +208,7 @@ public class Principal {
         }
         
         //Guarda el MRU obtenido
-        Config.setPrefs(Config.MRUFOLDERS, Util.object2ByteArray(mru_folders));
+        //Config.setPrefs(Config.MRUFOLDERS, Util.object2ByteArray(mru_folders));
         
     }
     
@@ -249,7 +217,10 @@ public class Principal {
      * @param bRecarga
      */
     private void FiltraYPintaGrid(boolean bRecarga) {
-        
+        double media = CalculaMediaRating();
+        if (bRecarga) {
+        	CargarTabla(false);
+        }
     }
     
     /**
