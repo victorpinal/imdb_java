@@ -36,6 +36,8 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
+import imdb_java.gui.mainWin;
+
 public class Principal {
 
     private static final Logger _log = Logger.getLogger(Principal.class.getName());
@@ -44,6 +46,7 @@ public class Principal {
     private ArrayList<String> rutasFinal = new ArrayList<>();
     private HashMap<String, String> map = new HashMap<>();
     private MyTableModel table = new MyTableModel();
+    private mainWin gui = new mainWin();
 
     public static void main(String[] args) {
 
@@ -70,6 +73,10 @@ public class Principal {
 
     }
 
+    public Principal() {
+		gui.setTableModel(table);
+	}
+    
     private void terminalDemo() throws Exception {
         Terminal t = new DefaultTerminalFactory().createTerminal();
         Screen scr = new TerminalScreen(t);
@@ -331,9 +338,8 @@ public class Principal {
         
     }
     
-
     private String getFilters() {
-        return null;
+        return "";
     }
     
     /*********************************************************/
