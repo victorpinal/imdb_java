@@ -1,5 +1,10 @@
 package imdb_java;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -82,4 +87,33 @@ public class Config {
 		}
 	}
     
+    public static String getApiKey() {
+        // 1) variable de entorno
+        String key = System.getenv("OMDB_API_KEY");
+        if (key != null && !key.isEmpty()) return key;
+
+        Properties p = new Properties();
+
+        // 2) user config: ~/.config/imdb_java/config.properties
+        Path userCfg = Path.of(System.getProperty("user.home"), ".config", "imdb_java", "config.properties");
+        if (Files.exists(userCfg)) {
+            try (InputStream in = Files.newInputStream(userCfg)) {
+                p.load(in);
+                key = p.getProperty("omdb.api_key");
+                if (key != null && !key.isEmpty()) return key;
+            } catch (IOException ignored) {}
+        }
+
+        // 3) project fallback ./config.properties
+        Path projCfg = Path.of("config.properties");
+        if (Files.exists(projCfg)) {
+            try (InputStream in = Files.newInputStream(projCfg)) {
+                p.load(in);
+                key = p.getProperty("omdb.api_key");
+                if (key != null && !key.isEmpty()) return key;
+            } catch (IOException ignored) {}
+        }
+
+        return null; // no encontrado
+    }
 }

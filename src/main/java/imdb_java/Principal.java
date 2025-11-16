@@ -23,20 +23,7 @@ import javax.swing.filechooser.FileSystemView;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
-
-import imdb_java.gui.mainWin;
+import imdb_java.gui.MainForm;
 
 public class Principal {
 
@@ -46,7 +33,7 @@ public class Principal {
     private ArrayList<String> rutasFinal = new ArrayList<>();
     private HashMap<String, String> map = new HashMap<>();
     private MyTableModel table = new MyTableModel();
-    private mainWin gui = new mainWin();
+    private MainForm gui = new MainForm();
 
     public static void main(String[] args) {
 
@@ -77,24 +64,6 @@ public class Principal {
 		gui.setTableModel(table);
 	}
     
-    private void terminalDemo() throws Exception {
-        Terminal t = new DefaultTerminalFactory().createTerminal();
-        Screen scr = new TerminalScreen(t);
-        scr.startScreen();
-        Panel p = new Panel(new LinearLayout(Direction.HORIZONTAL));
-        p.addComponent(new Label("Hi!"));
-        p.addComponent(new Label("Hi!"));
-        p.addComponent(new Label("Hi!"));
-        p.addComponent(new Button("botón"));
-        Window w = new BasicWindow("demo");
-        w.setComponent(p);
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(scr);
-        gui.addWindowAndWait(w);
-    }
-
-    private void run() {
-    }
-
     /**
      * Returns de displayname of de drive
      * 
@@ -166,7 +135,7 @@ public class Principal {
      */
     private void CargarRutasMRU() {
 
-        // Si no existe ya pedimos el directorio desde el que se cargará el listado de películas
+        // Si no existe ya pedimos el directorio desde el que se cargarï¿½ el listado de pelï¿½culas
         String last_folder = Config.getPrefs(Config.LASTFOLDER);
 
         if (last_folder == null || !Files.isDirectory(Paths.get(last_folder))) {
@@ -220,7 +189,7 @@ public class Principal {
     }
     
     /**
-     * Actualiza el grid, mostrando los ficheros según las opciones seleccionadas
+     * Actualiza el grid, mostrando los ficheros segï¿½n las opciones seleccionadas
      * @param bRecarga
      */
     private void FiltraYPintaGrid(boolean bRecarga) {
@@ -231,7 +200,7 @@ public class Principal {
     }
     
     /**
-     * Devuelve una lista de ficheros filtrados por extensión de los directorios indicados
+     * Devuelve una lista de ficheros filtrados por extensiï¿½n de los directorios indicados
      * @param sDirs Lista de directorios
      * @return
      */
@@ -259,7 +228,7 @@ public class Principal {
     private void CargarTabla(boolean bVerTodo) {
         String sql = "SELECT * FROM vw_film";
 
-        //Añade los registros (ficheros) que no existen en la base de datos
+        //Aï¿½ade los registros (ficheros) que no existen en la base de datos
         if (bVerTodo) {
             sql += " WHERE 1=1";
         } else {
@@ -267,7 +236,7 @@ public class Principal {
         }
         /**
          * Dim sql As String = "SELECT * FROM vw_film"
-            'Añade los registros (ficheros) que no existen en la base de datos
+            'Aï¿½ade los registros (ficheros) que no existen en la base de datos
             If (uxchkVerTodo.Checked) Then
                 sql &= " WHERE 1=1"
             Else
@@ -305,7 +274,7 @@ public class Principal {
     
     /**
      * Calcula la media de valoraciones de los registros visibles del grid
-     * @return Valorarción media
+     * @return Valorarciï¿½n media
      */
     private double CalculaMediaRating() {
         /*
